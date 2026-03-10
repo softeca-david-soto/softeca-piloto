@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,5 +18,13 @@ class DatabaseSeeder extends Seeder
         $this->call(VendedoresSeeder::class);
         $this->call(ProductosSeeder::class);
         $this->call(ClientesSeeder::class);
+
+        $admin = User::updateOrCreate([
+            'name' => 'Administrador',
+            'email' => 'admin@softeca.es',
+            'password' => bcrypt('david'),
+        ]);
+
+        $admin->assignRole('admin');
     }
 }
