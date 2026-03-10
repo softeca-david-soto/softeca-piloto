@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Vendedor;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class VendedoresSeeder extends Seeder
 {
@@ -16,16 +16,19 @@ class VendedoresSeeder extends Seeder
 
         $search = explode(",","á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ");
         $replace = explode(",","a,e,i,o,u,n,A,E,I,O,U,N");
+        $id = 0;
         foreach ($nombres as $nombre) {
 
             $email = str_replace($search, $replace, strtolower(str_replace(' ', '', $nombre)));
 
-            //He usado el Facade DB porque con modelos de Eloquent dice que el plural es "vendedors"
-            DB::table('vendedores')->insert([
+            $v = Vendedor::updateOrCreate([
                 'name' => $nombre,
                 'email' => $email.'@embutidossoto.es',
                 'password' => bcrypt('admin1'),
             ]);
+
+            $v->assignRole('vendedor');
+            $id++;
         }
     }
 }

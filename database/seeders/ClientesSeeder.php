@@ -5,9 +5,9 @@ namespace Database\Seeders;
 use App\Enums\TipoCliente;
 use App\Models\Cliente;
 use App\Models\Provincia;
+use App\Models\Vendedor;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
-use Illuminate\Support\Facades\DB;
 
 class ClientesSeeder extends Seeder
 {
@@ -18,8 +18,7 @@ class ClientesSeeder extends Seeder
     {
         $clientes = ['Adrián García', 'Carlos Fernández', 'Sofía González', 'Lucía Sánchez', 'Hugo Rodríguez', 'Gonzalo López', 'Héctor Martínez', 'Martina Pérez', 'María Gómez', 'Alba Díaz',];
         $provinciaIds = Provincia::pluck('id');
-        // Otra vez uso el Facade DB por el problema con el plural de vendedor
-        $vendedorIds =  DB::table('vendedores')->pluck('id');
+        $vendedorIds =  Vendedor::pluck('id');
         $faker = Faker::create('es_ES');
 
         $search = explode(",","á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ");
