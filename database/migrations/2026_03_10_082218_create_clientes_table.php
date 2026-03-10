@@ -1,0 +1,39 @@
+<?php
+
+use App\Enums\TipoCliente;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('clientes', function (Blueprint $table) {
+            $table->id();
+            $table->string('email')->unique();
+            $table->string('phone');
+            $table->string('zipcode');
+            $table->foreignId('provincia_id')
+                ->constrained()
+                ->onDelete('cascade');
+            $table->foreignId('vendedor_id')
+                ->references('id')
+                ->on('vendedores')
+                ->onDelete('cascade');
+            $table->enum('tipo', array_column(TipoCliente::cases(), 'value'));
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('clientes');
+    }
+};
