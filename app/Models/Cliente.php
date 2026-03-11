@@ -13,7 +13,7 @@ class Cliente extends Model
 
     public function vendedor()
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->belongsTo(User::class, 'vendedor_id')->vendedores();
     }
 
     public function provincia()

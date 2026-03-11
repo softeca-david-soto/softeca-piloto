@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Administrador',
             'email' => 'admin@softeca.es',
             'password' => bcrypt('david'),
+            'rol' => 'administrador',
         ]);
 
         $admin->assignRole('admin');

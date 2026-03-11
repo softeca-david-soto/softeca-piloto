@@ -23,7 +23,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->foreignId('vendedor_id')
                 ->references('id')
-                ->on('vendedores')
+                ->on('users')
                 ->onDelete('cascade');
             $table->enum('tipo', array_column(TipoCliente::cases(), 'value'));
             $table->timestamps();

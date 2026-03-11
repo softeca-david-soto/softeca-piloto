@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Vendedor;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class VendedoresSeeder extends Seeder
@@ -21,7 +21,7 @@ class VendedoresSeeder extends Seeder
 
             $email = str_replace($search, $replace, strtolower(str_replace(' ', '', $nombre)));
 
-            $v = Vendedor::updateOrCreate([
+            $v = User::updateOrCreate([
                 'name' => $nombre,
                 'email' => $email.'@embutidossoto.es',
                 'password' => bcrypt('admin1'),

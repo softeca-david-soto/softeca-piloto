@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Enums\TipoCliente;
 use App\Models\Cliente;
 use App\Models\Provincia;
-use App\Models\Vendedor;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 
@@ -18,7 +18,7 @@ class ClientesSeeder extends Seeder
     {
         $clientes = ['Adrián García', 'Carlos Fernández', 'Sofía González', 'Lucía Sánchez', 'Hugo Rodríguez', 'Gonzalo López', 'Héctor Martínez', 'Martina Pérez', 'María Gómez', 'Alba Díaz',];
         $provinciaIds = Provincia::pluck('id');
-        $vendedorIds =  Vendedor::pluck('id');
+        $vendedorIds =  User::where('rol', 'comercial')->pluck('id');
         $faker = Faker::create('es_ES');
 
         $search = explode(",","á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ");
