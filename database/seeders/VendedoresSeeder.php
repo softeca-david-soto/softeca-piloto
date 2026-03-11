@@ -27,7 +27,7 @@ class VendedoresSeeder extends Seeder
                 'password' => bcrypt('admin1'),
             ]);
 
-            $v->assignRole('vendedor');
+            $v->assignRole('comercial');
             $id++;
         }
     }

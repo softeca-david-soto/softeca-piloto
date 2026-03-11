@@ -65,11 +65,6 @@ class User extends Authenticatable
             ->implode('');
     }
 
-    public function scopeVendedores(Builder $query)
-    {
-        return $query->where('rol', 'comercial');
-    }
-
     public function clientes()
     {
         return $this->hasMany(Cliente::class);

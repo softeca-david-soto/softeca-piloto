@@ -16,14 +16,14 @@ class RoleSeeder extends Seeder
         // Reset cached roles and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        $roles = ['admin', 'vendedor'];
+        $roles = ['admin', 'comercial'];
 
         foreach ($roles as $role) {
             $createdRole = Role::create([
                 'name' => $role,
             ]);
 
-            if ($createdRole->name == 'vendedor')
+            if ($createdRole->name == 'comercial')
             {
                 $createdRole->givePermissionTo('VER_CLIENTES');
                 $createdRole->givePermissionTo('CREAR_CLIENTES');

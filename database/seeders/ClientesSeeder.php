@@ -18,7 +18,7 @@ class ClientesSeeder extends Seeder
     {
         $clientes = ['Adrián García', 'Carlos Fernández', 'Sofía González', 'Lucía Sánchez', 'Hugo Rodríguez', 'Gonzalo López', 'Héctor Martínez', 'Martina Pérez', 'María Gómez', 'Alba Díaz',];
         $provinciaIds = Provincia::pluck('id');
-        $vendedorIds =  User::where('rol', 'comercial')->pluck('id');
+        $vendedorIds =  User::role('comercial')->pluck('id');
         $faker = Faker::create('es_ES');
 
         $search = explode(",","á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ");
