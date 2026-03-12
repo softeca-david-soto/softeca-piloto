@@ -44,12 +44,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{client}/edit', 'edit')->name('edit');
             Route::put('/{client}/edit', 'update')->name('update');
             Route::get('/{client}/destroy', 'destroy' )->name('destroy');
-            Route::get('/{client}/show', 'show')->name('show');
+            Route::get('/{client}', 'show')->name('show');
         });
     });
 
     Route::group(['prefix' => 'productos', 'as' => 'productos.', 'controller' => ProductoController::class], function (){
-        Route::get('/', 'index')->name('index')->middleware('permission:VER_PRODUCTOS');
+        Route::middleware('permission:VER_PRODUCTOS')->group(function(){
+            Route::get('/', 'index')->name('index');
+            Route::get('/{product}', 'show')->name('show');
+            Route::get('/set-prices', 'setprices')->name('setprice')->middleware('permission:FIJAR_PRECIOS');
+        });
     });
 });
 
