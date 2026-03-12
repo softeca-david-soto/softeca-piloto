@@ -67,7 +67,7 @@ class User extends Authenticatable
 
     public function clientes()
     {
-        return $this->hasMany(Cliente::class);
+        return $this->hasMany(Cliente::class, 'vendedor_id');
     }
 
     public function scopeVendedores(Builder $query): Builder
