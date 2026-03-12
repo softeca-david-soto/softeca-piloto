@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Provincia;
 
 class ProvinciaController extends Controller
 {
-    //
+    public function index()
+    {
+
+		$provincias = Provincia::all();
+
+		return view('provincias.index', ['provincias' => $provincias]);
+    }
 }
