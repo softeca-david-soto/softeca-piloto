@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone');
-            $table->string('zipcode');
+            $table->string('zipcode')->nullable();
             $table->foreignId('provincia_id')
                 ->constrained()
                 ->onDelete('cascade');
