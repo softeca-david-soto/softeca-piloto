@@ -13,7 +13,7 @@
 								 'active' => request()->routeIs('productos.*')],
 							]];
 
-    if (auth()->user()->hasRole('admin'))
+    if (auth()->user()->hasRole('admin') || auth()->user()->hasPermissionTo('VER_VENDEDORES') || auth()->user()->hasPermissionTo('VER_TODOS_CLIENTES') )
     {
         $groups['Admin Zone'] = [['name' => 'Provincias',
                                   'icon' => 'map-pin',
@@ -23,6 +23,10 @@
                                   'icon' => 'briefcase',
                                   'url' => route('vendedores.index'),
                                   'active' => request()->routeIs('vendedores.*')],
+                                  ['name' => 'Todos los Clientes',
+                                  'icon' => 'wallet',
+                                  'url' => route('clientes.index'),
+                                  'active' => request()->routeIs('clientes.*')],
                                 ];
     }
 
