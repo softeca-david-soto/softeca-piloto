@@ -29,6 +29,7 @@ class PermisosSeeder extends Seeder
             'BORRAR_CLIENTES',
             'CREAR_PRODUCTOS',
             'VER_PRODUCTOS',
+            'FIJAR_PRECIOS',
             'EDITAR_PRODUCTOS',
             'BORRAR_PRODUCTOS',
         ];
