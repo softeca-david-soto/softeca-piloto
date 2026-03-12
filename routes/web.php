@@ -37,7 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::group(['prefix' => 'clientes', 'as' => 'clientes.', 'controller' => ClienteController::class], function(){
         Route::get('/listado_global', 'index')->name('index')->middleware('permission:VER_TODOS_CLIENTES');
 
-        Route::middleware('role:comercial')->group(function (){
+        Route::middleware('role:comercial|admin')->group(function (){
             Route::get('/', 'index2')->name('index2');
             Route::get('/create', 'create')->name('create');
             Route::post('/store', 'store')->name('store');
