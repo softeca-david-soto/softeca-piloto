@@ -51,7 +51,7 @@
                 <flux:sidebar.group :heading="__($group)" class="grid">
 
 					@foreach ($links as $link)
-                    <flux:sidebar.item icon="{{$link['icon']}}"  :current="$link['active']" wire:navigate>
+                    <flux:sidebar.item icon="{{$link['icon']}}" :href="$link['url']" :current="$link['active']" wire:navigate>
                         {{ __($link['name']) }}
                     </flux:sidebar.item>
 					@endforeach
