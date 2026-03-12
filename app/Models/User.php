@@ -69,4 +69,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Cliente::class);
     }
+
+    public function scopeVendedores(Builder $query): Builder
+    {
+        return $query->role('comercial');
+    }
 }
