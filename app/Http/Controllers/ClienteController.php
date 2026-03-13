@@ -11,18 +11,18 @@ class ClienteController extends Controller
 {
     public function index()
     {
+        if (auth()->user()->hasPermissionTo('VER_TODOS_CLIENTES') || auth()->user()->hasRole('admin'))
+        {
+            $clientes = Cliente::orderBy('vendedor_id', 'desc')->paginate(7);
 
-        $clientes = Cliente::orderBy('id', 'desc')->get();
+            return view('clientes.index', ['clientes' => $clientes, 'todos' => true]);
+        }
+        else
+        {
+            $clientes = auth()->user()->clientes()->paginate(7);
 
-        return view('clientes.index', ['clientes' => $clientes]);
-    }
-
-    public function index2()
-    {
-
-        $clientes = auth()->user()->clientes;
-
-        return view('clientes.index', ['clientes' => $clientes]);
+            return view('clientes.index', ['clientes' => $clientes, 'todos' => false]);
+        }
     }
 
     /**
@@ -55,6 +55,7 @@ class ClienteController extends Controller
             'title' => 'Bien hecho!',
             'text' => 'El cliente se ha creado correctamente',
         ]);
+
         return redirect()->route('clientes.index');
     }
 

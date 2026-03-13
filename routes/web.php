@@ -35,16 +35,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::group(['prefix' => 'clientes', 'as' => 'clientes.', 'controller' => ClienteController::class], function(){
-        Route::get('/listado_global', 'index')->name('index')->middleware('permission:VER_TODOS_CLIENTES');
+        // CAMBIADO 13/03/2026: Route::get('/listado_global', 'index')->name('index')->middleware('permission:VER_TODOS_CLIENTES');
 
         Route::middleware('role:comercial|admin')->group(function (){
-            Route::get('/', 'index2')->name('index2');
+            Route::get('/', 'index')->name('index');
             Route::get('/create', 'create')->name('create');
             Route::post('/store', 'store')->name('store');
-            Route::get('/{client}/edit', 'edit')->name('edit');
-            Route::put('/{client}/edit', 'update')->name('update');
-            Route::get('/{client}/destroy', 'destroy' )->name('destroy');
-            Route::get('/{client}', 'show')->name('show');
+            Route::get('/{cliente}/edit', 'edit')->name('edit');
+            Route::put('/{cliente}/edit', 'update')->name('update');
+            Route::delete('/{cliente}/destroy', 'destroy' )->name('destroy');
+            Route::get('/{cliente}', 'show')->name('show');
         });
     });
 

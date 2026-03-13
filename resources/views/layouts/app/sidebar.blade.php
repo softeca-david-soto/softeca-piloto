@@ -5,7 +5,7 @@
 								'active' => request()->routeIs()],
 								['name' => 'Clientes',
 								 'icon' => 'user-group',
-								  'url' => route('clientes.index2'),
+								  'url' => route('clientes.index'),
 								 'active' => request()->routeIs('clientes.*')],
 								['name' => 'Productos',
 								 'icon' => 'cube',
@@ -23,10 +23,10 @@
                                   'icon' => 'briefcase',
                                   'url' => route('vendedores.index'),
                                   'active' => request()->routeIs('vendedores.*')],
-                                  ['name' => 'Todos los Clientes',
-                                  'icon' => 'wallet',
-                                  'url' => route('clientes.index'),
-                                  'active' => request()->routeIs('clientes.*')],
+                                //   ['name' => 'Todos los Clientes',
+                                //   'icon' => 'wallet',
+                                //   'url' => route('clientes.index'),
+                                //   'active' => request()->routeIs('clientes.*')],
                                 ];
     }
 
