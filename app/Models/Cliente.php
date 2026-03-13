@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cliente extends Model
 {
+    protected $fillable = [
+    'name',
+    'email',
+    'phone',
+    'zipcode',
+    'provincia_id',
+    'vendedor_id',
+    'tipo',
+    ];
+
     protected $casts = [
         'tipo' => TipoCliente::class,
     ];
@@ -23,7 +33,7 @@ class Cliente extends Model
 
     public function productos()
     {
-        $this->belongsToMany(Producto::class);
+       return $this->belongsToMany(Producto::class);
     }
 
 }
