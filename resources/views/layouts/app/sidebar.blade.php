@@ -5,7 +5,7 @@
 								'active' => request()->routeIs()],
 								['name' => 'Clientes',
 								 'icon' => 'user-group',
-								  'url' => route('clientes.index2'),
+								  'url' => route('clientes.index'),
 								 'active' => request()->routeIs('clientes.*')],
 								['name' => 'Productos',
 								 'icon' => 'cube',
@@ -23,10 +23,10 @@
                                   'icon' => 'briefcase',
                                   'url' => route('vendedores.index'),
                                   'active' => request()->routeIs('vendedores.*')],
-                                  ['name' => 'Todos los Clientes',
-                                  'icon' => 'wallet',
-                                  'url' => route('clientes.index'),
-                                  'active' => request()->routeIs('clientes.*')],
+                                //   ['name' => 'Todos los Clientes',
+                                //   'icon' => 'wallet',
+                                //   'url' => route('clientes.index'),
+                                //   'active' => request()->routeIs('clientes.*')],
                                 ];
     }
 
@@ -51,7 +51,7 @@
                 <flux:sidebar.group :heading="__($group)" class="grid">
 
 					@foreach ($links as $link)
-                    <flux:sidebar.item icon="{{$link['icon']}}"  :current="$link['active']" wire:navigate>
+                    <flux:sidebar.item icon="{{$link['icon']}}" :href="$link['url']" :current="$link['active']" wire:navigate>
                         {{ __($link['name']) }}
                     </flux:sidebar.item>
 					@endforeach
