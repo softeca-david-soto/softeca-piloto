@@ -2,6 +2,8 @@
     <flux:main>
         {{ $slot }}
 
+        @stack('js')
+
 		@if (session('swal'))
 			<script>
 				Swal.fire(@json(session('swal')));
