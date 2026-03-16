@@ -64,7 +64,8 @@ class ClienteController extends Controller
 
 
         $cliente = Cliente::create($data);
-        $cliente->productos()->sync($data['productos'] ?? []);
+
+        $cliente->syncProductosConPrecio($data['productos'] ?? []);
 
         session()->flash('swal',[
             'icon' => 'success',
@@ -115,7 +116,8 @@ class ClienteController extends Controller
 
         $cliente->update($data);
 
-        $cliente->productos()->sync($data['productos'] ?? []);
+        $cliente->syncProductosConPrecio($data['productos'] ?? []);
+
 
         session()->flash('swal',[
             'icon' => 'info',

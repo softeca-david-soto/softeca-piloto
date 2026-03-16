@@ -33,7 +33,19 @@ class Cliente extends Model
 
     public function productos()
     {
-       return $this->belongsToMany(Producto::class, 'cliente_producto');
+       return $this->belongsToMany(Producto::class, 'cliente_producto')->withPivot('precio');
     }
+
+    public function syncProductosConPrecio(array $productoIds): void
+    {
+        $productos = Producto::whereIn('id', $productoIds)->get();
+
+        $this->productos()->sync(
+            $productos->mapWithKeys(fn($producto) => [
+                $producto->id => ['precio' => $producto->{'precio_' . $this->tipo->value}]
+            ])->toArray()
+        );
+    }
+
 
 }
