@@ -9,90 +9,83 @@ class VendedorController extends Controller
 {
     public function index()
     {
+        $vendedores = User::vendedores()->get();
 
-        $vendedores = User::vendedores()->orderBy('id', 'desc')->get();
-
-        return view('vendedores.index', ['vendedores' => $vendedores]);
+        return view('vendedores.index', ['vendedores' => $vendedores,]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('vendedores.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:vendedores',
-            'password' => 'required',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
         ]);
 
-        User::create($data);
+        $user = User::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'password' => bcrypt($data['password']),
+        ]);
 
-        session()->flash('swal',[
-            'icon' => 'success',
+        $user->assignRole('comercial');
+
+        session()->flash('swal', [
+            'icon'  => 'success',
             'title' => 'Bien hecho!',
-            'text' => 'El vendedor se ha creado correctamente',
+            'text'  => 'El vendedor se ha creado correctamente',
         ]);
+
         return redirect()->route('vendedores.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(User $vendedor)
     {
+        $vendedor->load('clientes.provincia');
         return view('vendedores.show', ['vendedor' => $vendedor]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(User $vendedor)
     {
         return view('vendedores.edit', ['vendedor' => $vendedor]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, User $vendedor)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:vendedores,email,'.$vendedor->id,
-            'password' => 'required',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email,'.$vendedor->id,
+            'password' => 'nullable|string|min:6',
         ]);
 
+        $vendedor->update([
+            'name'  => $data['name'],
+            'email' => $data['email'],
+            ...($data['password'] ? ['password' => bcrypt($data['password'])] : []),
+        ]);
 
-        $vendedor->update($data);
-
-        session()->flash('swal',[
-            'icon' => 'info',
+        session()->flash('swal', [
+            'icon'  => 'info',
             'title' => 'Edición Realizada',
-            'text' => 'El vendedor se ha actualizado correctamente',
+            'text'  => 'El vendedor se ha actualizado correctamente',
         ]);
+
         return redirect()->route('vendedores.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(User $vendedor)
     {
         $vendedor->delete();
 
-        session()->flash('swal',[
-            'icon' => 'warning',
+        session()->flash('swal', [
+            'icon'  => 'warning',
             'title' => 'Eliminado',
-            'text' => 'El vendedor se ha eliminado de la BBDD',
+            'text'  => 'El vendedor se ha eliminado de la BBDD',
         ]);
 
         return redirect()->route('vendedores.index');
