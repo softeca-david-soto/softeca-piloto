@@ -28,9 +28,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', 'index')->name('index')->middleware('permission:VER_VENDEDORES');
         Route::get('/create', 'create')->name('create')->middleware('permission:CREAR_VENDEDORES');
         Route::post('/store', 'store')->name('store')->middleware('permission:CREAR_VENDEDORES');
-        Route::get('/{user}/edit', 'edit')->name('edit')->middleware('permission:EDITAR_VENDEDORES');
-        Route::put('/{user}/edit', 'update')->name('update')->middleware('permission:EDITAR_VENDEDORES');
-        Route::get('/{user}/destroy', 'destroy' )->name('destroy')->middleware('permission:ELIMINAR_VENDEDORES');
+        Route::get('/{vendedor}', 'show')->name('show')->middleware('permission:VER_VENDEDORES');
+        Route::get('/{vendedor}/edit', 'edit')->name('edit')->middleware('permission:EDITAR_VENDEDORES');
+        Route::put('/{vendedor}/edit', 'update')->name('update')->middleware('permission:EDITAR_VENDEDORES');
+        Route::delete('/{vendedor}/destroy', 'destroy' )->name('destroy')->middleware('permission:ELIMINAR_VENDEDORES');
 
     });
 
@@ -49,26 +50,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::group(['prefix' => 'productos', 'as' => 'productos.', 'controller' => ProductoController::class], function () {
-    Route::middleware('permission:CREAR_PRODUCTOS')->group(function () {
-        Route::get('/create', 'create')->name('create');
-        Route::post('/store', 'store')->name('store');
-    });
+        Route::middleware('permission:CREAR_PRODUCTOS')->group(function () {
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+        });
 
-    Route::middleware('permission:VER_PRODUCTOS')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/set-prices', 'setprices')->name('setprice')->middleware('permission:FIJAR_PRECIOS');
-    });
+        Route::middleware('permission:VER_PRODUCTOS')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/set-prices', 'setprices')->name('setprice')->middleware('permission:FIJAR_PRECIOS');
+        });
 
-    Route::middleware('permission:VER_PRODUCTOS')->group(function () {
-        Route::get('/{producto}', 'show')->name('show');
-    });
+        Route::middleware('permission:VER_PRODUCTOS')->group(function () {
+            Route::get('/{producto}', 'show')->name('show');
+        });
 
-    Route::middleware('permission:CREAR_PRODUCTOS')->group(function () {
-        Route::get('/{producto}/edit', 'edit')->name('edit');
-        Route::put('/{producto}/edit', 'update')->name('update');
-        Route::delete('/{producto}/destroy', 'destroy')->name('destroy');
+        Route::middleware('permission:CREAR_PRODUCTOS')->group(function () {
+            Route::get('/{producto}/edit', 'edit')->name('edit');
+            Route::put('/{producto}/edit', 'update')->name('update');
+            Route::delete('/{producto}/destroy', 'destroy')->name('destroy');
+        });
     });
-});
 });
 
 

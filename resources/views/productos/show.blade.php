@@ -90,6 +90,7 @@
                             </td>
                             <td class="px-6 py-4">{{ $cliente->tipo->label() }}</td>
                             <td class="px-6 py-4">{{ number_format($cliente->pivot->precio, 2) }} €</td>
+                            {{-- {{ dd($cliente->pivot) }} --}}
                         </tr>
                         @endforeach
                     </tbody>
