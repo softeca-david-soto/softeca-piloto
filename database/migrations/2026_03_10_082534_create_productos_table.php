@@ -16,6 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('reference')->unique();
             $table->unsignedInteger('stock')->default(0);
+            $table->decimal('precio_tradicional')->nullable();
+            $table->decimal('precio_supermercado')->nullable();
+            $table->decimal('precio_cadena')->nullable();
+            $table->decimal('precio_distribuidor')->nullable();
             $table->timestamps();
         });
     }
