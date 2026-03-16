@@ -11,6 +11,10 @@ class Producto extends Model
         'name',
         'reference',
         'stock',
+        'precio_tradicional',
+        'precio_supermercado',
+        'precio_cadena',
+        'precio_distribuidor',
     ];
 
     protected $casts = [
@@ -18,6 +22,6 @@ class Producto extends Model
     ];
     public function clientes()
     {
-        return $this->belongsToMany(Cliente::class);
+        return $this->belongsToMany(Cliente::class, 'cliente_producto')->withPivot('precio');
     }
 }
