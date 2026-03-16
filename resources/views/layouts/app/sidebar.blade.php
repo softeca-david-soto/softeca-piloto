@@ -1,3 +1,38 @@
+@php
+    $groups = ['Platform' => [['name' => 'Dashboard',
+								'icon' => 'home',
+								'url' => route('dashboard'),
+								'active' => request()->routeIs()],
+								['name' => 'Clientes',
+								 'icon' => 'user-group',
+								  'url' => route('clientes.index'),
+								 'active' => request()->routeIs('clientes.*')],
+								['name' => 'Productos',
+								 'icon' => 'cube',
+								  'url' => route('productos.index'),
+								 'active' => request()->routeIs('productos.*')],
+							]];
+
+    if (auth()->user()->hasRole('admin') || auth()->user()->hasPermissionTo('VER_VENDEDORES') || auth()->user()->hasPermissionTo('VER_TODOS_CLIENTES') )
+    {
+        $groups['Admin Zone'] = [['name' => 'Provincias',
+                                  'icon' => 'map-pin',
+                                  'url' => route('provincias.index'),
+                                  'active' => request()->routeIs('provincias.*')],
+                                  ['name' => 'Vendedores',
+                                  'icon' => 'briefcase',
+                                  'url' => route('vendedores.index'),
+                                  'active' => request()->routeIs('vendedores.*')],
+                                //   ['name' => 'Todos los Clientes',
+                                //   'icon' => 'wallet',
+                                //   'url' => route('clientes.index'),
+                                //   'active' => request()->routeIs('clientes.*')],
+                                ];
+    }
+
+    // dd($groups);
+@endphp
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
@@ -11,24 +46,23 @@
             </flux:sidebar.header>
 
             <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('Platform')" class="grid">
-                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Dashboard') }}
+
+                @foreach ($groups as $group => $links)
+                <flux:sidebar.group :heading="__($group)" class="grid">
+
+					@foreach ($links as $link)
+                    <flux:sidebar.item icon="{{$link['icon']}}" :href="$link['url']" :current="$link['active']" wire:navigate>
+                        {{ __($link['name']) }}
                     </flux:sidebar.item>
+					@endforeach
+
                 </flux:sidebar.group>
+				@endforeach
+
+
             </flux:sidebar.nav>
 
             <flux:spacer />
-
-            <flux:sidebar.nav>
-                <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                    {{ __('Repository') }}
-                </flux:sidebar.item>
-
-                <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                    {{ __('Documentation') }}
-                </flux:sidebar.item>
-            </flux:sidebar.nav>
 
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
         </flux:sidebar>
