@@ -28,9 +28,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', 'index')->name('index')->middleware('permission:VER_VENDEDORES');
         Route::get('/create', 'create')->name('create')->middleware('permission:CREAR_VENDEDORES');
         Route::post('/store', 'store')->name('store')->middleware('permission:CREAR_VENDEDORES');
-        Route::get('/{user}/edit', 'edit')->name('edit')->middleware('permission:EDITAR_VENDEDORES');
-        Route::put('/{user}/edit', 'update')->name('update')->middleware('permission:EDITAR_VENDEDORES');
-        Route::get('/{user}/destroy', 'destroy' )->name('destroy')->middleware('permission:ELIMINAR_VENDEDORES');
+        Route::get('/{vendedor}', 'show')->name('show')->middleware('permission:VER_VENDEDORES');
+        Route::get('/{vendedor}/edit', 'edit')->name('edit')->middleware('permission:EDITAR_VENDEDORES');
+        Route::put('/{vendedor}/edit', 'update')->name('update')->middleware('permission:EDITAR_VENDEDORES');
+        Route::delete('/{vendedor}/destroy', 'destroy' )->name('destroy')->middleware('permission:ELIMINAR_VENDEDORES');
 
     });
 
