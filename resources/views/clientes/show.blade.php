@@ -95,6 +95,7 @@
                         <tr>
                             <th class="px-6 py-3 font-medium">REFERENCIA</th>
                             <th class="px-6 py-3 font-medium">NOMBRE</th>
+                            <th class="px-6 py-3 font-medium">PRECIO</th>
                             <th class="px-6 py-3 font-medium">STOCK</th>
                         </tr>
                     </thead>
@@ -102,7 +103,12 @@
                         @foreach ($cliente->productos as $producto)
                         <tr class="bg-neutral-primary border-b border-default">
                             <td class="px-6 py-4 font-medium text-heading">{{ $producto->reference }}</td>
-                            <td class="px-6 py-4">{{ ucfirst($producto->name) }}</td>
+                            <td class="px-6 py-4">
+                                <a href="{{ route('productos.show', $producto) }}" class="hover:underline">
+                                   {{  ucfirst($producto->name)  }}
+                                </a>
+                            </td>
+                            <td class="px-6 py-4">{{ number_format($producto->pivot->precio, 2).' €' }}</td>
                             <td class="px-6 py-4">{{ $producto->stock }}</td>
                         </tr>
                         @endforeach
