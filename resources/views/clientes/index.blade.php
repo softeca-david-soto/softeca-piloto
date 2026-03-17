@@ -51,9 +51,11 @@
 			<th scope="col" class="px-6 py-3 font-medium">
 				NOMBRE
 			</th>
+            @can('VER_TODOS_CLIENTES')
             <th scope="col" class="px-6 py-3 font-medium">
                 COMERCIAL
             </th>
+            @endcan
             <th scope="col" class="px-6 py-3 font-medium">
                 TIPO
             </th>
@@ -73,11 +75,13 @@
 				{{ $cliente->id }}
 			</th>
 			<td class="px-6 py-4">
-				{{ $cliente->name }}
+                {{ $cliente->name }}
 			</td>
+            @can('VER_TODOS_CLIENTES')
             <td class="px-6 py-4">
 				{{ $cliente->vendedor->name }}
 			</td>
+            @endcan
             <td class="px-6 py-4">
 				{{ $cliente->tipo->label()  }}
 			</td>
