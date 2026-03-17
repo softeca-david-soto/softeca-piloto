@@ -12,19 +12,34 @@ use Illuminate\Validation\Rules\Enum;
 
 class ClienteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $provincias = Provincia::orderBy('name')->get();
+        $productos = Producto::orderBy('name')->get();
+        $vendedores = User::vendedores()->get();
+        $order = $request->input('order', 'desc');
+
         if (auth()->user()->hasPermissionTo('VER_TODOS_CLIENTES') || auth()->user()->hasRole('admin'))
         {
-            $clientes = Cliente::orderBy('vendedor_id', 'desc')->paginate(7);
+            $clientes = Cliente::orderBy('created_at', $order)
+                ->when($request->filled('tipo'), fn($q) => $q->where('tipo', $request->tipo))
+                ->when($request->filled('provincia_id'), fn($q) => $q->where('provincia_id', $request->provincia_id))
+                ->when($request->filled('producto_id'), fn($q) => $q->whereHas('productos', fn($q) => $q->where('productos.id', $request->producto_id)))
+                ->when($request->filled('vendedor_id'), fn($q) => $q->where('vendedor_id', $request->vendedor_id))
+                ->paginate(7)->withQueryString();
 
-            return view('clientes.index', ['clientes' => $clientes, 'todos' => true]);
+            return view('clientes.index', ['clientes' => $clientes, 'todos' => true, 'provincias' => $provincias, 'productos' => $productos, 'vendedores' => $vendedores]);
         }
         else
         {
-            $clientes = auth()->user()->clientes()->paginate(7);
+            $clientes = auth()->user()->clientes()
+                ->orderBy('created_at', $order)
+                ->when($request->filled('tipo'), fn($q) => $q->where('tipo', $request->tipo))
+                ->when($request->filled('provincia_id'), fn($q) => $q->where('provincia_id', $request->provincia_id))
+                ->when($request->filled('producto_id'), fn($q) => $q->whereHas('productos', fn($q) => $q->where('productos.id', $request->producto_id)))
+                ->paginate(7)->withQueryString();
 
-            return view('clientes.index', ['clientes' => $clientes, 'todos' => false]);
+            return view('clientes.index', ['clientes' => $clientes, 'todos' => false, 'provincias' => $provincias, 'productos' => $productos]);
         }
     }
 

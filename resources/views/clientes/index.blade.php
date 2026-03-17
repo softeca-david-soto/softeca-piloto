@@ -1,15 +1,3 @@
-@if (count($clientes) == 0)
-<x-layouts::app title="Clientes">
-
-    <flux:breadcrumbs >
-        <flux:breadcrumbs.item href="{{ route('dashboard') }}">Dashboard</flux:breadcrumbs.item>
-        <flux:breadcrumbs.item>Mis Clientes</flux:breadcrumbs.item>
-    </flux:breadcrumbs>
-
-    <h1 class="mt-85 text-4xl font-bold tracking-tight text-heading md:text-5xl lg:text-6xl">No hay clientes asociados a tu usuario</h1>
-
-</x-layouts::app>
-@else
 <x-layouts::app title="Clientes">
 	<div class="mb-8 flex justify-between items-center">
 		<flux:breadcrumbs >
@@ -35,13 +23,89 @@
             </a>
         </div>
 	</div>
-    @if ($todos)
-    <div>
-        {{-- Nota: aquí puedo añadir un sistema de filtros por comercial, etc. NO ES URGENTE --}}
+    <form method="GET" action="{{ route('clientes.index') }}" class="mb-6">
+    <div class="bg-neutral-primary-soft border rounded-xl rounded-base p-4">
+        <div class="grid grid-cols-3 md:grid-cols-3 gap-4">
+
+            <flux:select name="tipo" placeholder="Tipo de cliente">
+                <flux:select.option value="">Todos los tipos</flux:select.option>
+                @foreach (App\Enums\TipoCliente::cases() as $tipo)
+                    <flux:select.option
+                        value="{{ $tipo->value }}"
+                        :selected="request('tipo') == $tipo->value">
+                        {{ $tipo->label() }}
+                    </flux:select.option>
+                @endforeach
+            </flux:select>
+
+            <flux:select name="provincia_id" placeholder="Provincia">
+                <flux:select.option value="">Todas las provincias</flux:select.option>
+                @foreach ($provincias as $provincia)
+                    <flux:select.option
+                        value="{{ $provincia->id }}"
+                        :selected="request('provincia_id') == $provincia->id">
+                        {{ $provincia->name }}
+                    </flux:select.option>
+                @endforeach
+            </flux:select>
+
+            <flux:select name="producto_id" placeholder="Producto">
+                <flux:select.option value="">Todos los productos</flux:select.option>
+                @foreach ($productos as $producto)
+                    <flux:select.option
+                        value="{{ $producto->id }}"
+                        :selected="request('producto_id') == $producto->id">
+                        {{ ucfirst($producto->name) }}
+                    </flux:select.option>
+                @endforeach
+            </flux:select>
+
+            @if (auth()->user()->hasRole('admin'))
+                <div class="col-start-1 col-end-2">
+                    <flux:select name="vendedor_id" placeholder="Comercial" class="col-span-2 mt-4">
+                        <flux:select.option value="">Todos los comerciales</flux:select.option>
+                        @foreach ($vendedores as $vendedor)
+                            <flux:select.option
+                                value="{{ $vendedor->id }}"
+                                :selected="request('vendedor_id') == $vendedor->id">
+                                {{ $vendedor->name }}
+                            </flux:select.option>
+                        @endforeach
+                    </flux:select>
+                </div>
+            @endif
+        </div>
+        <div class="flex justify-end gap-2 mt-4">
+            @if (request()->hasAny(['tipo', 'provincia_id', 'producto_id', 'vendedor_id']))
+                <a href="{{ route('clientes.index') }}">
+                    <flux:button variant="ghost">Limpiar</flux:button>
+                </a>
+            @endif
+            <flux:button type="submit" variant="primary">Filtrar</flux:button>
+        </div>
     </div>
-    @endif
+</form>
+    <div class="flex justify-between items-center mb-2">
+        <a href="{{ route('clientes.index', array_merge(request()->query(), ['order' => request('order', 'desc') == 'desc' ? 'asc' : 'desc'])) }}"
+        class="inline-flex items-center gap-1.5 text-xs text-body hover:text-heading transition-colors">
+            @if (request('order', 'desc') == 'desc')
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
+                </svg>
+                <span>Más recientes primero</span>
+            @else
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h5.25m5.25-.75L17.25 9m0 0L21 12.75M17.25 9v12" />
+                </svg>
+                <span>Más antiguos primero</span>
+            @endif
+        </a>
+    </div>
 
 	<div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default mb-4">
+    @if (count($clientes) == 0)
+            <p class="text-body text-sm">No se han encontrado clientes.</p>
+    @else
     <table class="w-full text-sm text-left rtl:text-right text-body">
 	<thead class="text-sm text-body bg-gray-200 border-b rounded-base border-default">
 		<tr>
@@ -118,6 +182,7 @@
 		@endforeach
 	</tbody>
     </table>
+    @endif
 </div>
 
 <div class="mt-4">
@@ -152,5 +217,3 @@
 @endpush
 </x-layouts::app>
 
-
-@endif
