@@ -113,6 +113,10 @@ class ClienteController extends Controller
             'productos.*' => 'exists:productos,id',
         ]);
 
+        if (auth()->user()->hasRole('comercial'))
+        {
+            $data['vendedor_id'] = auth()->id();
+        }
 
         $cliente->update($data);
 
