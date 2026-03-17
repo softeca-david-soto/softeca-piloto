@@ -54,7 +54,11 @@ class ProductoController extends Controller
 
     public function show(Producto $producto)
     {
-        $clientes = $producto->clientes()->get();
+        $clientes = $producto->clientes->where('vendedor_id', auth()->id());
+
+        if (auth()->user()->hasRole('admin')) {
+            $clientes = $producto->clientes()->get();
+        }
         $tipos = TipoCliente::cases();
 
         return view('productos.show', ['producto' => $producto, 'clientes' => $clientes, 'tipos' => $tipos]);

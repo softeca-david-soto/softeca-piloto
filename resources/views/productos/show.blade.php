@@ -68,7 +68,7 @@
     <div class="bg-neutral-primary-soft border border-default rounded-base p-6">
         <h2 class="text-sm font-medium text-body uppercase tracking-widest mb-4">Clientes con este producto</h2>
 
-        @if ($producto->clientes->isEmpty())
+        @if ($clientes->isEmpty())
             <p class="text-body text-sm">No hay clientes asociados a este producto.</p>
         @else
             <div class="relative overflow-x-auto rounded-base border border-default">
@@ -81,7 +81,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($producto->clientes as $cliente)
+                        @foreach ($clientes as $cliente)
                         <tr class="bg-neutral-primary border-b border-default">
                             <td class="px-6 py-4 font-medium text-heading">
                                 <a href="{{ route('clientes.show', $cliente) }}" class="hover:underline">
