@@ -20,15 +20,17 @@
                 @endforeach
             </flux:select>
             <flux:input name="zipcode" placeholder="09007" label="Codigo Postal" value="{{ old('zipcode') }}"></flux:input>
-            <flux:select name="vendedor_id" label="Comercial" :disabled="auth()->user()->hasRole('comercial')">
-                @foreach ($vendedores as $vendedor)
-                    <flux:select.option
-                        value="{{ $vendedor->id }}"
-                        :selected="old('vendedor_id', auth()->user()->hasRole('comercial') ? auth()->id() : null) == $vendedor->id">
-                        {{ $vendedor->name }}
-                    </flux:select.option>
-                @endforeach
-            </flux:select>
+            @if (auth()->user()->hasRole('admin'))
+                <flux:select name="vendedor_id" label="Comercial" :disabled="auth()->user()->hasRole('comercial')">
+                    @foreach ($vendedores as $vendedor)
+                        <flux:select.option
+                            value="{{ $vendedor->id }}"
+                            :selected="old('vendedor_id', auth()->user()->hasRole('comercial') ? auth()->id() : null) == $vendedor->id">
+                            {{ $vendedor->name }}
+                        </flux:select.option>
+                    @endforeach
+                </flux:select>
+            @endif
             <flux:select name="tipo" label="Tipo de Cliente">
                 @foreach (App\Enums\TipoCliente::cases() as $tipo)
                     <flux:select.option
