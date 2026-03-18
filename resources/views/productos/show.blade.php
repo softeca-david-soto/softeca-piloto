@@ -39,7 +39,7 @@
                 <div class="flex justify-between items-center">
                     <span class="text-sm text-body">{{ $tipo->label() }}</span>
                     <span class="text-sm font-medium text-heading">
-                        {{ number_format($producto->{'precio_' . $tipo->value}, 2) }} €
+                        {{ number_format($producto->{'precio_' . $tipo->value}, 2, ',') }} €
                     </span>
                 </div>
                 @endforeach
@@ -89,7 +89,7 @@
                                 </a>
                             </td>
                             <td class="px-6 py-4">{{ $cliente->tipo->label() }}</td>
-                            <td class="px-6 py-4">{{ number_format($cliente->pivot->precio, 2) }} €</td>
+                            <td class="px-6 py-4">{{ number_format($cliente->pivot->precio, 2, ',') }} €</td>
                             {{-- {{ dd($cliente->pivot) }} --}}
                         </tr>
                         @endforeach
