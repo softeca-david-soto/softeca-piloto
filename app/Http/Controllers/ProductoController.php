@@ -10,7 +10,7 @@ class ProductoController extends Controller
 {
     public function index()
     {
-        $productos = Producto::orderBy('id', 'desc')->paginate(7);
+        $productos = Producto::activos()->orderBy('id', 'desc')->paginate(7);
 
         return view('productos.index', ['productos' => $productos]);
     }
@@ -54,10 +54,10 @@ class ProductoController extends Controller
 
     public function show(Producto $producto)
     {
-        $clientes = $producto->clientes->where('vendedor_id', auth()->id());
+        $clientes = $producto->clientes->where('vendedor_id', auth()->id())->where('activo', 1);
 
         if (auth()->user()->hasRole('admin')) {
-            $clientes = $producto->clientes()->get();
+            $clientes = $producto->clientes()->where('activo', 1)->get();
         }
         $tipos = TipoCliente::cases();
 
@@ -103,7 +103,9 @@ class ProductoController extends Controller
 
      public function destroy(Producto $producto)
     {
-        $producto->delete();
+        $producto['activo'] = 0;
+
+        $producto->update();
 
         session()->flash('swal', [
             'icon'  => 'warning',
