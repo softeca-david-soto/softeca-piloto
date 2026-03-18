@@ -102,7 +102,7 @@
         </a>
     </div>
 
-	<div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default mb-4">
+	<div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border rounded-xl mb-4">
     @if (count($clientes) == 0)
             <p class="text-body text-sm">No se han encontrado clientes.</p>
     @else
