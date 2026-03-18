@@ -108,7 +108,7 @@
                                    {{  ucfirst($producto->name)  }}
                                 </a>
                             </td>
-                            <td class="px-6 py-4">{{ number_format($producto->pivot->precio, 2).' €' }}</td>
+                            <td class="px-6 py-4">{{ number_format($producto->pivot->precio, 2, ',').' €' }}</td>
                             <td class="px-6 py-4">{{ $producto->stock }}</td>
                         </tr>
                         @endforeach
