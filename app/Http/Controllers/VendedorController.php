@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -52,15 +53,18 @@ class VendedorController extends Controller
 
     public function edit(User $vendedor)
     {
-        return view('vendedores.edit', ['vendedor' => $vendedor]);
+        $clientes = Cliente::activos()->orderBy('name')->get();
+        return view('vendedores.edit', ['vendedor' => $vendedor, 'clientes' => $clientes]);
     }
 
     public function update(Request $request, User $vendedor)
     {
         $data = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email,'.$vendedor->id,
-            'password' => 'nullable|string|min:6',
+        'name'       => 'required|string|max:255',
+        'email'      => 'required|email|unique:users,email,'.$vendedor->id,
+        'password'   => 'nullable|string|min:6',
+        'clientes'   => 'nullable|array',
+        'clientes.*' => 'exists:clientes,id',
         ]);
 
         $vendedor->update([
@@ -68,6 +72,14 @@ class VendedorController extends Controller
             'email' => $data['email'],
             ...($data['password'] ? ['password' => bcrypt($data['password'])] : []),
         ]);
+
+        // Asigna el vendedor a los clientes seleccionados
+        Cliente::whereIn('id', $data['clientes'] ?? [])->update(['vendedor_id' => $vendedor->id]);
+
+        // Los clientes que tenía antes y ahora no están seleccionados se asignan a la cuenta de administración
+        Cliente::where('vendedor_id', $vendedor->id)
+            ->whereNotIn('id', $data['clientes'] ?? [])
+            ->update(['vendedor_id' => 4]);
 
         session()->flash('swal', [
             'icon'  => 'info',
