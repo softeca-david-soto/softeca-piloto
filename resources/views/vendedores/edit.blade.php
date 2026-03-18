@@ -29,6 +29,31 @@
                     <flux:input name="password" type="password"></flux:input>
                 </div>
             </div>
+            <div class="border border-default rounded-base p-4 space-y-4">
+                <p class="text-sm font-medium text-body uppercase tracking-widest">Asignar clientes</p>
+                <select name="clientes[]" id="select-clientes" class="w-full" multiple="multiple">
+                    @foreach ($clientes as $cliente)
+                        <option
+                            value="{{ $cliente->id }}"
+                            {{ in_array($cliente->id, old('clientes', $vendedor->clientes->pluck('id')->toArray())) ? 'selected' : '' }}>
+                            {{ $cliente->name }} — {{ $cliente->provincia->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            @push('js')
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    jQuery("#select-clientes").select2({
+                        theme: "tailwindcss-4",
+                        placeholder: "Buscar cliente...",
+                        allowClear: true,
+                        width: '50%',
+                    });
+                });
+            </script>
+            @endpush
 
             <p class="text-xs text-zinc-400">
                 <span class="text-red-500 font-semibold">*</span> Campos obligatorios

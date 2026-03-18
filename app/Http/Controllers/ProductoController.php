@@ -8,9 +8,23 @@ use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $productos = Producto::activos()->orderBy('id', 'desc')->paginate(7);
+        $order = $request->input('order', 'desc');
+
+        $productos = Producto::activos()
+            ->orderBy('created_at', $order)
+            ->when($request->filled('search'), fn($q) => $q
+                ->where('name', 'like', '%'.$request->search.'%')
+                ->orWhere('reference', 'like', '%'.$request->search.'%')
+            )
+            ->when($request->filled('stock'), fn($q) => match($request->stock) {
+                'con'   => $q->where('stock', '>', 0),
+                'sin'   => $q->where('stock', 0),
+                'poco'  => $q->where('stock', '>', 0)->where('stock', '<', 50),
+                default => $q
+            })
+            ->paginate(7)->withQueryString();
 
         return view('productos.index', ['productos' => $productos]);
     }
