@@ -80,7 +80,9 @@ class VendedorController extends Controller
 
     public function destroy(User $vendedor)
     {
-        $vendedor->delete();
+        $vendedor['activo'] = 0;
+
+        $vendedor->update();
 
         session()->flash('swal', [
             'icon'  => 'warning',

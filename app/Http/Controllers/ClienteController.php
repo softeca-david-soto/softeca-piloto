@@ -15,13 +15,13 @@ class ClienteController extends Controller
     public function index(Request $request)
     {
         $provincias = Provincia::orderBy('name')->get();
-        $productos = Producto::orderBy('name')->get();
+        $productos = Producto::activos()->orderBy('name')->get();
         $vendedores = User::vendedores()->get();
         $order = $request->input('order', 'desc');
 
         if (auth()->user()->hasPermissionTo('VER_TODOS_CLIENTES') || auth()->user()->hasRole('admin'))
         {
-            $clientes = Cliente::orderBy('created_at', $order)
+            $clientes = Cliente::activos()->orderBy('created_at', $order)
                 ->when($request->filled('tipo'), fn($q) => $q->where('tipo', $request->tipo))
                 ->when($request->filled('provincia_id'), fn($q) => $q->where('provincia_id', $request->provincia_id))
                 ->when($request->filled('producto_id'), fn($q) => $q->whereHas('productos', fn($q) => $q->where('productos.id', $request->producto_id)))
@@ -32,7 +32,7 @@ class ClienteController extends Controller
         }
         else
         {
-            $clientes = auth()->user()->clientes()
+            $clientes = auth()->user()->clientes()->where('activo', 1)
                 ->orderBy('created_at', $order)
                 ->when($request->filled('tipo'), fn($q) => $q->where('tipo', $request->tipo))
                 ->when($request->filled('provincia_id'), fn($q) => $q->where('provincia_id', $request->provincia_id))
@@ -48,7 +48,7 @@ class ClienteController extends Controller
      */
     public function create()
     {
-        $productos = Producto::all();
+        $productos = Producto::activos()->get();
         $vendedores = User::vendedores()->get();
         $provincias = Provincia::orderBy('name')->get();
 
@@ -104,7 +104,7 @@ class ClienteController extends Controller
      */
     public function edit(Cliente $cliente)
     {
-        $productos = Producto::all();
+        $productos = Producto::activos()->get();
         $vendedores = User::vendedores()->get();
         $provincias = Provincia ::orderBy('name')->get();
 
@@ -151,7 +151,9 @@ class ClienteController extends Controller
      */
     public function destroy(Cliente $cliente)
     {
-        $cliente->delete();
+        $cliente['activo'] = 0;
+
+        $cliente->update();
 
         session()->flash('swal',[
             'icon' => 'warning',

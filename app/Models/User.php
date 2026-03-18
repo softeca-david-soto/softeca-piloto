@@ -72,6 +72,11 @@ class User extends Authenticatable
 
     public function scopeVendedores(Builder $query): Builder
     {
-        return $query->role('comercial');
+        return $query->role('comercial')->where('activo', 1);
+    }
+
+    public function scopeActivos($query)
+    {
+        return $query->where('activo', 1);
     }
 }
