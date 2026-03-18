@@ -34,7 +34,7 @@
                     </th>
                     <td class="px-6 py-4">{{ $vendedor->name }}</td>
                     <td class="px-6 py-4">{{ $vendedor->email }}</td>
-                    <td class="px-6 py-4">{{ $vendedor->clientes->count() }}</td>
+                    <td class="px-6 py-4">{{ $vendedor->clientes->where('activo', 1)->count() }}</td>
                     <td class="px-6 py-4 grid grid-cols-2">
                         <a href="{{ route('vendedores.edit', $vendedor) }}" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">

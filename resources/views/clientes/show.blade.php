@@ -70,7 +70,11 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-body shrink-0">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                     </svg>
-                    <span class="text-heading">{{ $cliente->vendedor->name }}</span>
+                    @if ($cliente->vendedor == null)
+                        <span class="text-heading italic">El vendedor no está activo</span>
+                    @else
+                        <span class="text-heading">{{ $cliente->vendedor->name }}</span>
+                    @endif
                 </div>
                 <div class="flex items-center gap-3">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-body shrink-0">
@@ -86,7 +90,7 @@
     <div class="bg-neutral-primary-soft border border-default rounded-base p-6">
         <h2 class="text-sm font-medium text-body uppercase tracking-widest mb-4">Productos</h2>
 
-        @if ($cliente->productos->isEmpty())
+        @if ($cliente->productos->where('activo', 1)->isEmpty())
             <p class="text-body text-sm">No hay productos asociados a este cliente.</p>
         @else
             <div class="relative overflow-x-auto rounded-base border border-default">
@@ -100,7 +104,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($cliente->productos as $producto)
+                        @foreach ($cliente->productos->where('activo', 1) as $producto)
                         <tr class="bg-neutral-primary border-b border-default">
                             <td class="px-6 py-4 font-medium text-heading">{{ $producto->reference }}</td>
                             <td class="px-6 py-4">

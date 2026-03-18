@@ -28,7 +28,7 @@
     <div class="bg-neutral-primary-soft border border-default rounded-base p-6">
         <h2 class="text-sm font-medium text-body uppercase tracking-widest mb-4">Clientes asociados</h2>
 
-        @if ($vendedor->clientes->isEmpty())
+        @if ($vendedor->clientes->where('activo', 1)->isEmpty())
             <p class="text-body text-sm">Este vendedor no tiene clientes asignados.</p>
         @else
             <div class="relative overflow-x-auto rounded-base border border-default">
@@ -42,7 +42,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($vendedor->clientes as $cliente)
+            @foreach ($vendedor->clientes->where('activo', 1) as $cliente)
             <tr class="bg-neutral-primary border-b border-default">
                 <td class="px-6 py-4">
                     <a href="{{ route('clientes.show', $cliente) }}" class="inline-flex items-center text-black hover:text-gray-700">
