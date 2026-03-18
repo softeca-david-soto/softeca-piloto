@@ -24,4 +24,9 @@ class Producto extends Model
     {
         return $this->belongsToMany(Cliente::class, 'cliente_producto')->withPivot('precio');
     }
+
+    public function scopeActivos($query)
+    {
+        return $query->where('activo', 1);
+    }
 }

@@ -47,5 +47,10 @@ class Cliente extends Model
         );
     }
 
+    public function scopeActivos($query)
+    {
+        return $query->where('activo', 1);
+    }
+
 
 }
