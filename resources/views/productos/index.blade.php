@@ -19,7 +19,7 @@
         @endcan
     </div>
 
-    <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default mb-4">
+    <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border rounded-xl mb-4">
         <table class="w-full text-sm text-left rtl:text-right text-body">
             <thead class="text-sm text-body bg-gray-200 border-b rounded-base border-default">
                 <tr>
