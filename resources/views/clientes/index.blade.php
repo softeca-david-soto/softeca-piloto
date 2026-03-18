@@ -144,7 +144,7 @@
             @can('VER_TODOS_CLIENTES')
                 @if ($cliente->vendedor == null)
                     <td class="px-6 py-4 italic">
-                        <p>Deshabilitado</p>
+                        <p>No asignado</p>
                     </td>
                 @else
                     <td class="px-6 py-4">
