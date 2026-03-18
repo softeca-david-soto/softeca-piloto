@@ -14,10 +14,57 @@
             </div>
         </a>
     </div>
+    <form method="GET" action="{{ route('vendedores.index') }}" class="mb-6">
+        <div class="bg-neutral-primary-soft border rounded-xl rounded-base p-4">
+            <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
 
-    <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default mb-4">
+                <flux:input
+                    name="search"
+                    placeholder="Nombre o email..."
+                    value="{{ request('search') }}">
+                </flux:input>
+
+                <flux:select name="clientes">
+                    <flux:select.option value="">Todos</flux:select.option>
+                    <flux:select.option value="con" :selected="request('clientes') == 'con'">Con clientes</flux:select.option>
+                    <flux:select.option value="sin" :selected="request('clientes') == 'sin'">Sin clientes</flux:select.option>
+                </flux:select>
+
+            </div>
+            <div class="flex justify-end gap-2 mt-4">
+                @if (request()->hasAny(['search', 'clientes']))
+                    <a href="{{ route('vendedores.index') }}">
+                        <flux:button variant="ghost">Limpiar</flux:button>
+                    </a>
+                @endif
+                <flux:button type="submit" variant="primary">Filtrar</flux:button>
+            </div>
+        </div>
+    </form>
+
+    <div class="flex justify-between items-center mb-2">
+        <a href="{{ route('vendedores.index', array_merge(request()->query(), ['order' => request('order', 'desc') == 'desc' ? 'asc' : 'desc'])) }}"
+        class="inline-flex items-center gap-1.5 text-xs text-body hover:text-heading transition-colors">
+            @if (request('order', 'desc') == 'desc')
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
+                </svg>
+                <span>Más recientes primero</span>
+            @else
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h5.25m5.25-.75L17.25 9m0 0L21 12.75M17.25 9v12" />
+                </svg>
+                <span>Más antiguos primero</span>
+            @endif
+        </a>
+    </div>
+
+    <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border rounded-xl mb-4">
+        @if (count($vendedores) == 0)
+            <p class="text-body text-sm">No se han encontrado vendedores.</p>
+        @else
         <table class="w-full text-sm text-left rtl:text-right text-body">
-            <thead class="text-sm text-body bg-neutral-secondary-soft border-b rounded-base border-default">
+            <thead class="text-sm bg-gray-200 text-body bg-neutral-secondary-soft border-b rounded-base border-default">
                 <tr>
                     <th scope="col" class="px-6 py-3 font-medium">ID</th>
                     <th scope="col" class="px-6 py-3 font-medium">NOMBRE</th>
@@ -34,7 +81,7 @@
                     </th>
                     <td class="px-6 py-4">{{ $vendedor->name }}</td>
                     <td class="px-6 py-4">{{ $vendedor->email }}</td>
-                    <td class="px-6 py-4">{{ $vendedor->clientes->count() }}</td>
+                    <td class="px-6 py-4">{{ $vendedor->clientes->where('activo', 1)->count() }}</td>
                     <td class="px-6 py-4 grid grid-cols-2">
                         <a href="{{ route('vendedores.edit', $vendedor) }}" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -61,19 +108,33 @@
                 @endforeach
             </tbody>
         </table>
+        @endif
     </div>
 
     @push('js')
-        <script>
-            let forms = document.querySelectorAll('.delete-form');
-            forms.forEach(form => {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    if (confirm("¿Quieres eliminar este vendedor? Este cambio no es reversible")) {
-                        form.submit();
-                    }
-                });
-            });
-        </script>
+    <script>
+		let forms = document.querySelectorAll('.delete-form');
+
+		forms.forEach(form => {
+			form.addEventListener('submit', (e)=>{
+				e.preventDefault();
+
+				Swal.fire({
+					title: "Quieres eliminar este vendedor?",
+					text: "Este cambio no es reversible",
+					icon: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#3085d6",
+					cancelButtonColor: "#d33",
+					confirmButtonText: "Si, eliminalo"
+					}).then((result) => {
+					if (result.isConfirmed) {
+						form.submit();
+					}
+				});
+
+			});
+		});
+	</script>
     @endpush
 </x-layouts::app>

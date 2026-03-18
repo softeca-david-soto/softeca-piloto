@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('precio_supermercado')->nullable();
             $table->decimal('precio_cadena')->nullable();
             $table->decimal('precio_distribuidor')->nullable();
+            $table->boolean('activo')->default(true);
             $table->timestamps();
         });
     }

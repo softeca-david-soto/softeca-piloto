@@ -16,7 +16,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 
     Route::group(['prefix' => 'provincias', 'as' => 'provincias.', 'controller' => ProvinciaController::class], function (){

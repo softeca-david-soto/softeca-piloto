@@ -8,9 +8,23 @@ use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $productos = Producto::orderBy('id', 'desc')->paginate(7);
+        $order = $request->input('order', 'desc');
+
+        $productos = Producto::activos()
+            ->orderBy('created_at', $order)
+            ->when($request->filled('search'), fn($q) => $q
+                ->where('name', 'like', '%'.$request->search.'%')
+                ->orWhere('reference', 'like', '%'.$request->search.'%')
+            )
+            ->when($request->filled('stock'), fn($q) => match($request->stock) {
+                'con'   => $q->where('stock', '>', 0),
+                'sin'   => $q->where('stock', 0),
+                'poco'  => $q->where('stock', '>', 0)->where('stock', '<', 50),
+                default => $q
+            })
+            ->paginate(7)->withQueryString();
 
         return view('productos.index', ['productos' => $productos]);
     }
@@ -54,10 +68,10 @@ class ProductoController extends Controller
 
     public function show(Producto $producto)
     {
-        $clientes = $producto->clientes->where('vendedor_id', auth()->id());
+        $clientes = $producto->clientes->where('vendedor_id', auth()->id())->where('activo', 1);
 
         if (auth()->user()->hasRole('admin')) {
-            $clientes = $producto->clientes()->get();
+            $clientes = $producto->clientes()->where('activo', 1)->get();
         }
         $tipos = TipoCliente::cases();
 
@@ -103,7 +117,9 @@ class ProductoController extends Controller
 
      public function destroy(Producto $producto)
     {
-        $producto->delete();
+        $producto['activo'] = 0;
+
+        $producto->update();
 
         session()->flash('swal', [
             'icon'  => 'warning',

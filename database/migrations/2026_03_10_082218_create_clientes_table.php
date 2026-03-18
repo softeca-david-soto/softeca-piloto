@@ -26,6 +26,7 @@ return new class extends Migration
                 ->on('users')
                 ->onDelete('cascade');
             $table->enum('tipo', array_column(TipoCliente::cases(), 'value'));
+            $table->boolean('activo')->default(true);
             $table->timestamps();
         });
     }
