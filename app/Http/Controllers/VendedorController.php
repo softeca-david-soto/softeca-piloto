@@ -8,11 +8,24 @@ use Illuminate\Http\Request;
 
 class VendedorController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $vendedores = User::vendedores()->get();
+        $order = $request->input('order', 'desc');
 
-        return view('vendedores.index', ['vendedores' => $vendedores,]);
+        $vendedores = User::vendedores()
+            ->orderBy('created_at', $order)
+            ->when($request->filled('search'), fn($q) => $q
+                ->where('name', 'like', '%'.$request->search.'%')
+                ->orWhere('email', 'like', '%'.$request->search.'%')
+            )
+            ->when($request->filled('clientes'), fn($q) => match($request->clientes) {
+                'con'   => $q->has('clientes'),
+                'sin'   => $q->doesntHave('clientes'),
+                default => $q
+            })
+            ->get();
+
+        return view('vendedores.index', ['vendedores' => $vendedores]);
     }
 
     public function create()
