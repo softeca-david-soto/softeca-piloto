@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\TipoCliente;
 use App\Exports\ClientesExport;
+use App\Imports\ClientesImport;
 use App\Models\Cliente;
 use App\Models\Producto;
 use App\Models\Provincia;
@@ -12,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rules\Enum;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 class ClienteController extends Controller
 {
@@ -191,8 +193,20 @@ class ClienteController extends Controller
         return Excel::download(new ClientesExport($request), 'clientes.xlsx');
     }
 
-    public function import()
+    public function import(Request $request)
     {
-        return "buenas tardes";
+        $request->validate([
+            'import_file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+
+        try{
+            Excel::import(new ClientesImport(), $request->file('import_file'));
+            return back()->with('success', 'Importación finalizada con éxito.');
+        }catch (ValidationException $e)
+        {
+            $failures = $e->failures();
+
+            return back()->with('import_errors', $failures);
+        }
     }
 }
