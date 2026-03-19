@@ -8,6 +8,7 @@ use App\Models\Producto;
 use App\Models\Provincia;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rules\Enum;
 
 class ClienteController extends Controller
@@ -96,6 +97,11 @@ class ClienteController extends Controller
      */
     public function show(Cliente $cliente)
     {
+        if (!Gate::allows('view', $cliente))
+        {
+            abort(404);
+        }
+
         return view('clientes.show', ['cliente' => $cliente]);
     }
 
