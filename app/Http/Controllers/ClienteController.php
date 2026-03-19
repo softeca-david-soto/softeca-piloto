@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\TipoCliente;
+use App\Exports\ClientesExport;
 use App\Models\Cliente;
 use App\Models\Producto;
 use App\Models\Provincia;
@@ -10,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rules\Enum;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClienteController extends Controller
 {
@@ -182,5 +184,15 @@ class ClienteController extends Controller
             ->update(['vendedor_id' => $request->vendedor_id]);
 
         return response()->json(['success' => true]);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new ClientesExport($request), 'clientes.xlsx');
+    }
+
+    public function import()
+    {
+        return "buenas tardes";
     }
 }
