@@ -85,6 +85,18 @@
         </div>
     </div>
 </form>
+    @can('VER_TODOS_CLIENTES')
+    <div id="panel-asignacion" class="hidden mb-4 bg-neutral-primary-soft border border-default rounded-xl p-4 flex items-center gap-4">
+        <span class="text-sm text-body"><span id="count-seleccionados">0</span> clientes seleccionados</span>
+        <select id="select-comercial" name="vendedor_id" class="w-64">
+            @foreach ($vendedores as $vendedor)
+                <option value="{{ $vendedor->id }}">{{ $vendedor->name }}</option>
+            @endforeach
+        </select>
+        <flux:button id="btn-asignar" variant="primary" size="sm">Asignar comercial</flux:button>
+        <flux:button id="btn-cancelar" variant="ghost" size="sm">Cancelar</flux:button>
+    </div>
+    @endcan
     <div class="flex justify-between items-center mb-2">
         <a href="{{ route('clientes.index', array_merge(request()->query(), ['order' => request('order', 'desc') == 'desc' ? 'asc' : 'desc'])) }}"
         class="inline-flex items-center gap-1.5 text-xs text-body hover:text-heading transition-colors">
@@ -109,6 +121,9 @@
     <table class="w-full text-sm text-left rtl:text-right text-body">
 	<thead class="text-sm text-body bg-gray-200 border-b rounded-base border-default">
 		<tr>
+            @can('VER_TODOS_CLIENTES')
+            <th scope="col" class="px-6 py-3 font-medium w-8"></th>
+            @endcan
 			<th scope="col" class="px-6 py-3 font-medium">
 				ID
 			</th>
@@ -134,7 +149,12 @@
 	<tbody>
 
 		@foreach ($clientes as $cliente)
-		<tr class="bg-neutral-primary border-b border-default">
+		<tr class="bg-neutral-primary border-b border-default fila-cliente">
+            @can('VER_TODOS_CLIENTES')
+            <td class="px-6 py-4">
+                <input type="checkbox" class="checkbox-cliente cursor-pointer" value="{{ $cliente->id }}">
+            </td>
+            @endcan
 			<th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
 				{{ $cliente->id }}
 			</th>
@@ -219,6 +239,70 @@
 
 			});
 		});
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+        jQuery('#select-comercial').select2({
+            theme: 'tailwindcss-4',
+            placeholder: 'Seleccionar comercial...',
+            width: '16rem',
+        });
+
+        const panel = document.getElementById('panel-asignacion');
+        const countEl = document.getElementById('count-seleccionados');
+        const btnCancelar = document.getElementById('btn-cancelar');
+        const btnAsignar = document.getElementById('btn-asignar');
+
+        function actualizarPanel() {
+            const seleccionados = document.querySelectorAll('.checkbox-cliente:checked');
+            countEl.textContent = seleccionados.length;
+            panel.classList.toggle('hidden', seleccionados.length === 0);
+        }
+
+        document.querySelectorAll('.fila-cliente').forEach(fila => {
+            fila.addEventListener('dblclick', function () {
+                const checkbox = this.querySelector('.checkbox-cliente');
+                checkbox.checked = !checkbox.checked;
+                actualizarPanel();
+            });
+
+            const checkbox = fila.querySelector('.checkbox-cliente');
+            if (checkbox) {
+                checkbox.addEventListener('change', actualizarPanel);
+            }
+        });
+
+        btnCancelar.addEventListener('click', function () {
+            document.querySelectorAll('.checkbox-cliente').forEach(cb => cb.checked = false);
+            actualizarPanel();
+        });
+
+        btnAsignar.addEventListener('click', function () {
+            const ids = Array.from(document.querySelectorAll('.checkbox-cliente:checked'))
+                            .map(cb => cb.value);
+            const vendedorId = jQuery('#select-comercial').val();
+
+            if (!vendedorId) {
+                alert('Selecciona un comercial');
+                return;
+            }
+
+            fetch('{{ route('clientes.asignarVendedor') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ clientes: ids, vendedor_id: vendedorId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                }
+            });
+        });
+    });
 	</script>
 @endpush
 </x-layouts::app>

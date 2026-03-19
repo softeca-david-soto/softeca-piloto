@@ -46,6 +46,7 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
             Route::put('/{cliente}/edit', 'update')->name('update');
             Route::delete('/{cliente}/destroy', 'destroy' )->name('destroy');
             Route::get('/{cliente}', 'show')->name('show');
+            Route::post('/asignar-vendedor', 'asignarVendedor')->name('asignarVendedor');
         });
     });
 

@@ -163,4 +163,18 @@ class ClienteController extends Controller
 
         return redirect()->route('clientes.index');
     }
+
+    public function asignarVendedor(Request $request)
+    {
+        $request->validate([
+            'clientes'    => 'required|array',
+            'clientes.*'  => 'exists:clientes,id',
+            'vendedor_id' => 'required|exists:users,id',
+        ]);
+
+        Cliente::whereIn('id', $request->clientes)
+            ->update(['vendedor_id' => $request->vendedor_id]);
+
+        return response()->json(['success' => true]);
+    }
 }
