@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\GoodByeMail;
 use App\Mail\WelcomeMail;
 use App\Models\Cliente;
 use App\Models\User;
@@ -112,6 +113,8 @@ class VendedorController extends Controller
         $vendedor['activo'] = 0;
 
         $vendedor->update();
+
+        Mail::to($vendedor->email)->send(new GoodByeMail($vendedor));
 
         session()->flash('swal', [
             'icon'  => 'warning',
