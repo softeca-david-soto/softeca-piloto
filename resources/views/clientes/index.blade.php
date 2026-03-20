@@ -97,23 +97,162 @@
         <flux:button id="btn-cancelar" variant="ghost" size="sm">Cancelar</flux:button>
     </div>
     @endcan
-    <div class="flex justify-between items-center mb-2">
-        <a href="{{ route('clientes.index', array_merge(request()->query(), ['order' => request('order', 'desc') == 'desc' ? 'asc' : 'desc'])) }}"
-        class="inline-flex items-center gap-1.5 text-xs text-body hover:text-heading transition-colors">
-            @if (request('order', 'desc') == 'desc')
+    <div class="flex justify-between mb-2">
+        <div class="flex justify-between items-center ">
+            <a href="{{ route('clientes.index', array_merge(request()->query(), ['order' => request('order', 'desc') == 'desc' ? 'asc' : 'desc'])) }}"
+            class="inline-flex items-center gap-1.5 text-xs text-body hover:text-heading transition-colors">
+                @if (request('order', 'desc') == 'desc')
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
+                    </svg>
+                    <span>Más recientes primero</span>
+                @else
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h5.25m5.25-.75L17.25 9m0 0L21 12.75M17.25 9v12" />
+                    </svg>
+                    <span>Más antiguos primero</span>
+                @endif
+            </a>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('clientes.plantilla') }}"
+                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold
+                    bg-gray-50 text-gray-700 border border-gray-200
+                    hover:bg-gray-100 hover:border-gray-300 hover:shadow-sm
+                    active:scale-95 transition-all duration-150">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                 </svg>
-                <span>Más recientes primero</span>
-            @else
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h5.25m5.25-.75L17.25 9m0 0L21 12.75M17.25 9v12" />
-                </svg>
-                <span>Más antiguos primero</span>
-            @endif
-        </a>
-    </div>
+                Descargar Plantilla
 
+
+            </a>
+            <a href="{{ route('clientes.export', request()->all()) }}"
+                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold
+                    bg-emerald-50 text-emerald-700 border border-emerald-200
+                    hover:bg-emerald-100 hover:border-emerald-300 hover:shadow-sm
+                    active:scale-95 transition-all duration-150">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12-3-3m0 0-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                </svg>
+                Exportar
+            </a>
+            <flux:modal.trigger name="import-modal">
+                <button type="button"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold
+                        bg-blue-50 text-blue-700 border border-blue-200
+                        hover:bg-blue-100 hover:border-blue-300 hover:shadow-sm
+                        active:scale-95 transition-all duration-150 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m.75 12 3 3m0 0 3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                    </svg>
+                    Importar
+                </button>
+            </flux:modal.trigger>
+
+            <flux:modal name="import-modal" class="md:w-112.5">
+                <form action="{{ route('clientes.import') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                    @csrf
+                    <div>
+                        <flux:heading size="lg">Importar Clientes</flux:heading>
+                        <flux:subheading>Selecciona un archivo .xlsx o .csv con el formato correcto.</flux:subheading>
+                    </div>
+                    <div class="rounded-lg border border-blue-100 bg-blue-50/50 p-4 space-y-3">
+                        <div class="flex items-center gap-2 text-blue-800 font-semibold text-xs uppercase tracking-wider">
+                            <svg xmlns="http://www.w3.org" viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a1 1 0 0 0 0 2v3a1 1 0 0 0 1 1h1a1 1 0 1 0 0-2v-3a1 1 0 0 0-1-1H9Z" clip-rule="evenodd" />
+                            </svg>
+                            Reglas de importación
+                        </div>
+                        <ul class="space-y-2 text-xs text-blue-700/80 leading-relaxed">
+
+                            <li class="flex gap-2">
+                                <span class="font-bold text-blue-800">Crear:</span>
+                                Deja el campo <code class="bg-blue-100 px-1 rounded text-blue-900">id</code> vacío para registrar un nuevo cliente.
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="font-bold text-blue-800">Actualizar:</span>
+                                Indica el <code class="bg-blue-100 px-1 rounded text-blue-900">id</code> de un cliente que ya te pertenezca para modificarlo.
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="font-bold text-blue-800">Seguridad:</span>
+                                @if(auth()->user()->hasRole('comercial'))
+                                    Todo nuevo registro se asignará automáticamente a tu usuario.
+                                @else
+                                    Usa la columna <code class="bg-blue-100 px-1 rounded text-blue-900">vendedor_id</code> para asignar comerciales.
+                                @endif
+                            </li>
+                            @if(auth()->user()->hasRole('admin'))
+                                <li class="flex gap-2">
+                                    <span class="font-bold text-blue-800">Admin:</span>
+                                    Debes indicar el <code class="bg-blue-100 px-1 rounded text-blue-900">vendedor_id</code> numérico para asignar cada cliente.
+                                </li>
+                            @else
+                                <li class="flex gap-2">
+                                    <span class="font-bold text-blue-800">Comercial:</span>
+                                    Puedes dejar vendedor_id vacío. El sistema te asignará los clientes automáticamente.
+                                </li>
+                            @endif
+                            <li class="flex gap-2">
+                                <span class="font-bold text-blue-800">Productos:</span>
+                                Separa los IDs de productos con comas (ej: 1,4,12).
+                            </li>
+                        </ul>
+                    </div>
+
+                    <flux:input type="file" name="file" label="Archivo Excel" required accept=".xlsx,.xls,.csv" />
+
+                    <div class="flex gap-2">
+                        <flux:spacer />
+                        <flux:modal.close>
+                            <flux:button variant="ghost">Cancelar</flux:button>
+                        </flux:modal.close>
+                        <flux:button type="submit" variant="primary">Subir y Procesar</flux:button>
+                    </div>
+                </form>
+            </flux:modal>
+
+        </div>
+    </div>
+    @if (session()->has('success'))
+        <div class="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-sm flex items-center gap-2">
+            <svg xmlns="http://www.w3.org" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session()->has('import_errors'))
+        <div class="mb-6 bg-red-50 border border-red-200 rounded-xl overflow-hidden">
+            <div class="bg-red-100 px-4 py-2 border-b border-red-200 flex items-center gap-2 text-red-800 font-bold text-sm">
+                <svg xmlns="http://www.w3.org" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                No se ha guardado ningún dato. Corrige los siguientes errores:
+            </div>
+            <div class="p-4 max-h-60 overflow-y-auto">
+                <ul class="space-y-2">
+                    @foreach (session()->get('import_errors') as $failure)
+                        <li class="text-xs text-red-700 flex flex-col">
+                            <span class="font-bold uppercase tracking-wider">Fila {{ $failure->row() }} - Columna "{{ $failure->attribute() }}":</span>
+                            <div class="flex flex-col ml-2">
+                                @foreach ($failure->errors() as $error)
+                                    <span>• {{ $error }}</span>
+                                @endforeach
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+            {{ session('error') }}
+        </div>
+    @endif
 	<div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border rounded-xl mb-4">
     @if (count($clientes) == 0)
             <p class="text-body text-sm">No se han encontrado clientes.</p>

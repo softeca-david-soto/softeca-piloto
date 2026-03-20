@@ -3,13 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Enums\TipoCliente;
+use App\Exports\ClientesExport;
+use App\Exports\PlantillaClientesExport;
+use App\Imports\ClientesImport;
 use App\Models\Cliente;
 use App\Models\Producto;
 use App\Models\Provincia;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rules\Enum;
+use Maatwebsite\Excel\Concerns\FromArray;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 class ClienteController extends Controller
 {
@@ -182,5 +190,33 @@ class ClienteController extends Controller
             ->update(['vendedor_id' => $request->vendedor_id]);
 
         return response()->json(['success' => true]);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new ClientesExport($request), 'clientes.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate(['file' => 'required|mimes:xlsx,xls,csv']);
+
+        try {
+            DB::transaction(function () use ($request) {
+                Excel::import(new ClientesImport, $request->file('file'));
+            });
+
+            return back()->with('success', '¡Importación exitosa! Todos los registros se guardaron.');
+
+        } catch (ValidationException $e) {
+            return back()->with('import_errors', $e->failures());
+        } catch (Exception $e) {
+            return back()->with('error', 'Error inesperado: ' . $e->getMessage());
+        }
+    }
+
+    public function descargarPlantilla()
+    {
+        return Excel::download(new PlantillaClientesExport(), 'plantilla_clientes.xlsx');
     }
 }
