@@ -42,6 +42,9 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/create', 'create')->name('create');
             Route::post('/store', 'store')->name('store');
+            Route::get('/export', 'export')->name('export');
+            Route::post('/import', 'import')->name('import');
+            Route::get('/plantilla','descargarPlantilla')->name('plantilla');
             Route::get('/{cliente}/edit', 'edit')->name('edit');
             Route::put('/{cliente}/edit', 'update')->name('update');
             Route::delete('/{cliente}/destroy', 'destroy' )->name('destroy');

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\GoodByeMail;
+use App\Mail\WelcomeMail;
 use App\Models\Cliente;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class VendedorController extends Controller
 {
@@ -54,6 +57,8 @@ class VendedorController extends Controller
             'title' => 'Bien hecho!',
             'text'  => 'El vendedor se ha creado correctamente',
         ]);
+
+        Mail::to($user->email)->send(new WelcomeMail($user));
 
         return redirect()->route('vendedores.index');
     }
@@ -108,6 +113,8 @@ class VendedorController extends Controller
         $vendedor['activo'] = 0;
 
         $vendedor->update();
+
+        Mail::to($vendedor->email)->send(new GoodByeMail($vendedor));
 
         session()->flash('swal', [
             'icon'  => 'warning',
