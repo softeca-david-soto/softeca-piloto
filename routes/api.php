@@ -8,7 +8,11 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::group(['prefix' => 'clientes', 'as' => 'apiclientes.', 'controller' => ClienteApiController::class], function (){
+// Route::group(['prefix' => 'clientes', 'as' => 'apiclientes.', 'controller' => ClienteApiController::class], function (){
 
-    Route::get('/', 'index')->name('index');
-});
+//     Route::get('/', 'index')->name('index');
+// });
+
+// apiResource: crea las rutas para index, store, show, update y destroy
+
+Route::apiResource('/apiclientes', ClienteApiController::class);
