@@ -20,7 +20,7 @@ class PlantillaClientesExport implements FromArray, WithStyles, ShouldAutoSize, 
             'telefono',
             'zipcode',
             'provincia_id',
-            'tipo (tradicional,supermercado,cadena,distribuidor)',
+            'tipo',
             'vendedor_id',
             'productos'
         ];
